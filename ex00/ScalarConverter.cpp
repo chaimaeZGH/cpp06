@@ -1,4 +1,7 @@
 #include "ScalarConverter.hpp"
+#include <string>
+#include <algorithm>
+#include <set>
 
 ScalarConverter::ScalarConverter(const ScalarConverter &other)
 {
@@ -45,9 +48,7 @@ int check_n(std::string& arg)
 int check_char(std::string& arg)
 {
     int a = std::atoi(arg.c_str());
-    if (arg.length())
-    {
-        if (!std::isdigit(arg[0])) 
+        if ( a == 0) 
         {
             std::cout<<"char: "<< static_cast<char>(arg[0]) <<std::endl;
             std::cout<< "int: "<< static_cast<int>(arg[0])<<std::endl;
@@ -55,24 +56,52 @@ int check_char(std::string& arg)
             std::cout<<"double: "<< static_cast<double>(arg[0])<<".0"<<std::endl;
             return 1;
         }
-        if(std::isdigit(arg[0]))
+        else if(a < 32 || a>128)
         {
             std::cout<<"char: "<< "Non displayable" <<std::endl;
             std::cout<< "int: "<< static_cast<int>(a)<<std::endl;
             std::cout<<"float: "<< static_cast<float>(a)<<".0f"<<std::endl;
             std::cout<<"double: "<< static_cast<double>(a)<<".0"<<std::endl;
+            return 1;
         }
-        return 1;
-    }
+        else
+        {
+            std::cout<<"char: "<< static_cast<char>(a) <<std::endl;
+            std::cout<< "int: "<< static_cast<int>(a)<<std::endl;
+            std::cout<<"float: "<< static_cast<float>(a)<<".0f"<<std::endl;
+            std::cout<<"double: "<< static_cast<double>(a)<<".0"<<std::endl;
+            return 1;
+        }
+        
     return 0;
 }
 
-// int check_float(std::string& arg)
-// {
-//     // chack for .
-//     // then if its not at the last and only one point and whatever right or left is number
-//     // chack for f at the end
-// }
+int check_float(std::string& arg)
+{
+    
+    int a = std::atoi(arg.c_str());
+    if(a>128 || a<32)
+        std::cout<<"char: "<< "Non displayable" <<std::endl;
+    else
+        std::cout<<"char: "<< static_cast<char>(a) <<std::endl;
+    std::cout<< "int: "<< static_cast<int>(a)<<std::endl;
+    std::cout<<"float: "<< arg <<std::endl;
+    std::cout<<"double: "<< arg <<std::endl;//this wrong
+    return 1;
+}
+
+int check_double(std::string& arg)
+{
+    int a = std::atoi(arg.c_str());
+    if(a > 128 || a < 32)
+        std::cout<<"char: "<< "Non displayable" <<std::endl;
+    else
+        std::cout<<"char: "<< static_cast<char>(a) <<std::endl;
+    std::cout<< "int: "<< static_cast<int>(a)<<std::endl;
+    std::cout<<"float: "<< arg <<"f"<<std::endl;//this wrong
+    std::cout<<"double: "<< arg <<std::endl;
+    return 1;
+}
 
 void ScalarConverter::convert(const std::string& str)
 {
@@ -83,10 +112,23 @@ void ScalarConverter::convert(const std::string& str)
         return;
     }
     if(check_n(arg))
-        return;
+        return ;
+    if (std::count(arg.begin(), arg.end(), '.') > 0 ) 
+    {
+        if(std::count(arg.begin(), arg.end(), '.') > 1)
+        {
+            std::cout << "argument is incorect"<<std::endl;
+            return;
+        }
+        if(std::count(arg.begin(), arg.end(), 'f')==1)
+        {
+            if(check_float(arg))
+                return;
+        }
+        if(check_double(arg))
+                return;
+    }
     if(check_char(arg))
-        return;
-    // if(chack_float(arg))
-    //     return;
-    return;
+        return ;
+    return ;
 }
