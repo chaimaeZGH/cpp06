@@ -22,4 +22,5 @@ class Serializer
         static Data* deserialize(uintptr_t raw);
 };
 
+
 #endif
