@@ -46,7 +46,8 @@ int check_n(std::string& arg)
 int check_char(std::string& arg)
 {
     int a = std::atoi(arg.c_str());
-     if ( a == 0) 
+
+     if ( a == 0 && arg != "0") 
         {
             std::cout<<"char: "<< static_cast<char>(arg[0]) <<std::endl;
             std::cout<< "int: "<< static_cast<int>(arg[0])<<std::endl;
@@ -117,15 +118,31 @@ bool valid_num(const std::string& str)
 void ScalarConverter::convert(const std::string& str)
 {
     std::string arg = str;
+    if(std::all_of(arg.begin(), arg.end(), ::isdigit))
+    {
+        try
+        {
+            int a;
+            a = std::stoi(arg);
+        }
+        catch (const std::out_of_range& e)
+        {
+            std::cout << "Error: Integer overflow" << std::endl;
+            return;
+        }
+    }
     int a = std::atoi(arg.c_str());
     bool valid = valid_num(str);
-    
+    if(a < 0)
+    {
+        check_char(arg);
+        return ;
+    }
     if((arg.length() > 1 && !valid) || (std::count(arg.begin(), arg.end(), 'e') > 0 && a > 0))
     {
         std::cout << "argument is incorect"<<std::endl;
         return;
     }
-
     if(arg.empty())
     {
         std::cout << "argument is empty"<<std::endl;
@@ -147,5 +164,4 @@ void ScalarConverter::convert(const std::string& str)
         return ;
     return ;
 }
-// overflo
-// 0.0
+
