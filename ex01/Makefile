@@ -2,7 +2,7 @@ CC = c++
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -f
 SRCS = main.cpp Serializer.cpp
-NAME = convert
+NAME = Serialization
 OBJS = $(SRCS:.cpp=.o)
 HEADER = Serializer.hpp
 

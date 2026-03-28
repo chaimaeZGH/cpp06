@@ -1,5 +1,4 @@
 #include "ScalarConverter.hpp"
-#include <string>
 
 
 ScalarConverter::ScalarConverter(const ScalarConverter &other)
@@ -120,11 +119,13 @@ void ScalarConverter::convert(const std::string& str)
     std::string arg = str;
     int a = std::atoi(arg.c_str());
     bool valid = valid_num(str);
+    
     if((arg.length() > 1 && !valid) || (std::count(arg.begin(), arg.end(), 'e') > 0 && a > 0))
     {
         std::cout << "argument is incorect"<<std::endl;
         return;
     }
+
     if(arg.empty())
     {
         std::cout << "argument is empty"<<std::endl;

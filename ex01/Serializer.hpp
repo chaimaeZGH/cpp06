@@ -5,9 +5,9 @@
 
 struct Data
 {
-    char a;
-    int b;
-    float c;
+    int a;
+    char b;
+    double c;
 };
 
 class Serializer
@@ -21,6 +21,5 @@ class Serializer
         static uintptr_t serialize(Data* ptr);
         static Data* deserialize(uintptr_t raw);
 };
-
 
 #endif
