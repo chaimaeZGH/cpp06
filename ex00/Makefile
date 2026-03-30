@@ -6,7 +6,7 @@ NAME = convert
 OBJS = $(SRCS:.cpp=.o)
 HEADER = ScalarConverter.hpp
 
-all: $(NAME)	
+all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME)

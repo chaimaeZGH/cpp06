@@ -41,6 +41,8 @@ int check_n(std::string& arg)
     }
     return 0;
 }
+
+
 int check_char(std::string& arg)
 {
     int a = std::atoi(arg.c_str());
@@ -71,6 +73,7 @@ int check_char(std::string& arg)
         }
     return 0;
 }
+
 int check_float(std::string& arg)
 {
     float f = std::strtof(arg.c_str(), NULL);
@@ -99,55 +102,23 @@ int check_double(std::string& arg)
     return 1;
 }
 
-bool isNumber(const std::string arg)
+bool valid_num(const std::string& str)
 {
-    if (arg.empty())
+    char delimiter = '.';
+    if(std::count(str.begin(), str.end(), '.') > 1)
         return false;
-    size_t start = 0;
-    if (arg[0] == '+' || arg[0] == '-')
-        start = 1;
-    if (start == arg.size())
+    size_t dotPos = str.find(delimiter);
+    std::string first = str.substr(0, dotPos);
+    std::string second = str.substr(dotPos + 1, str.size() - 1);
+    if(!std::all_of(first.begin(), first.end(), ::isdigit) || !std::all_of(second .begin(), second .end(), ::isdigit) )
         return false;
-    return std::all_of(arg.begin() + start, arg.end(), ::isdigit);
+    return true;
 }
 
 void ScalarConverter::convert(const std::string& str)
 {
     std::string arg = str;
-    if(check_n(arg))
-        return ;
-    if(arg.length() == 1 && !isdigit(arg[0]))
-    {
-        if(check_char(arg))
-            return ;
-    }
-    if (std::count(arg.begin(), arg.end(), '.') == 1 ) 
-    {
-        char delimiter = '.';
-        if (arg.back() == 'f')
-        {
-            size_t dotPos = arg.find(delimiter);
-            std::string first = arg.substr(0, dotPos);
-            std::string second = arg.substr(dotPos + 1, arg.size() - dotPos - 2);
-            if (!isNumber(first)||
-                !std::all_of(second.begin(), second.end(), ::isdigit))
-                return;
-            if (check_float(arg))
-                return;
-        }
-        size_t dotPos = arg.find(delimiter);
-        std::string first = arg.substr(0, dotPos);
-        std::string second = arg.substr(dotPos + 1);
-        if (!isNumber(first)|| 
-            !std::all_of(second .begin(), second .end(), ::isdigit))
-        {     
-            std::cout << "invalid arg" << std::endl;   
-            return ;
-        }
-        if(check_double(arg))
-            return;
-    }
-    if( isNumber(arg))
+    if(std::all_of(arg.begin(), arg.end(), ::isdigit))
     {
         try
         {
@@ -159,15 +130,42 @@ void ScalarConverter::convert(const std::string& str)
             std::cout << "Error: Integer overflow" << std::endl;
             return;
         }
-        if(check_char(arg))
-        return ;
     }
-    else
+    int a = std::atoi(arg.c_str());
+    bool valid = valid_num(str);
+    if(a < 0)
     {
-        std::cout << "invalid arg" << std::endl;
+        check_char(arg);
         return ;
     }
+    if((arg.length() > 1 && !valid) || (std::count(arg.begin(), arg.end(), 'e') > 0 && a > 0))
+    {
+        std::cout << "argument is incorect"<<std::endl;
+        return;
+    }
+    if(arg.empty())
+    {
+        std::cout << "argument is empty"<<std::endl;
+        return;
+    }
+    if(check_n(arg))
+        return ;
+    if (std::count(arg.begin(), arg.end(), '.') > 0 ) 
+    {
+        if(std::count(arg.begin(), arg.end(), 'f')==1)
+        {
+            if(check_float(arg))
+                return;
+        }
+        if(check_double(arg))
+                return;
+    }
+    if(check_char(arg))
+        return ;
+    return ;
 }
+
+
 
 
 
@@ -175,9 +173,7 @@ void ScalarConverter::convert(const std::string& str)
 // missing -42.2
 // and if a number have f like 0f
 // precision of a double and float
-
 // --to fix
-
 // A more robust way to structure the convert method is:
 
 // Check for Pseudo-literals (nan, inf).
