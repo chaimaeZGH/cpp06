@@ -74,14 +74,25 @@ int check_char(std::string& arg)
     return 0;
 }
 
+bool isDigits(const std::string &s,int start,int end)
+{
+    for (size_t i = start; i < end; i++)
+    {
+        if (!std::isdigit(s[i]))
+            return false;
+    }
+    return true;
+}
 int check_float(std::string& arg)
 {
-    float f = std::strtof(arg.c_str(), NULL);
+    float f = static_cast<float>(std::strtod(arg.c_str(), NULL));
     int a = std::atoi(arg.c_str());
     if(a > 126 || a < 32)
         std::cout<<"char: "<< "Non displayable" <<std::endl;
     else
         std::cout<<"char: "<< static_cast<char>(a) <<std::endl;
+    if(f > 2147483647 || f < -2147483648)
+        std::cout<< "int: "<< "overflow"<<std::endl;
     std::cout<< "int: "<< static_cast<int>(a)<<std::endl;
     std::cout<<"float: "<< f << "f"<<std::endl;
     std::cout<<"double: "<< static_cast<double>(f) <<std::endl;
@@ -96,11 +107,14 @@ int check_double(std::string& arg)
         std::cout<<"char: "<< "Non displayable" <<std::endl;
     else
         std::cout<<"char: "<< static_cast<char>(a) <<std::endl;
+    if(d > 2147483647 || d < -2147483648)
+        std::cout<< "int: "<< "overflow"<<std::endl;
     std::cout<< "int: "<< static_cast<int>(a)<<std::endl;
     std::cout<<"float: "<< static_cast<float>(d)<<"f"<<std::endl;
     std::cout<<"double: "<< d <<std::endl;
     return 1;
 }
+
 
 bool valid_num(const std::string& str)
 {
@@ -110,7 +124,7 @@ bool valid_num(const std::string& str)
     size_t dotPos = str.find(delimiter);
     std::string first = str.substr(0, dotPos);
     std::string second = str.substr(dotPos + 1, str.size() - 1);
-    if(!std::all_of(first.begin(), first.end(), ::isdigit) || !std::all_of(second .begin(), second .end(), ::isdigit) )
+    if(!isDigits(first,first.begin(), first.end())|| !isDigits(second,second.begin(), second.end()))//all_of c++11
         return false;
     return true;
 }
@@ -118,12 +132,14 @@ bool valid_num(const std::string& str)
 void ScalarConverter::convert(const std::string& str)
 {
     std::string arg = str;
-    if(std::all_of(arg.begin(), arg.end(), ::isdigit))
+    if(!isDigits(first,first.begin(), first.end())|| !isDigits(second,second.begin(), second.end()))//all_of c++11
     {
         try
         {
             int a;
-            a = std::stoi(arg);
+            std::istringstream iss(arg);
+            iss >> a;
+            // a = std::stoi(arg);//c++11
         }
         catch (const std::out_of_range& e)
         {
